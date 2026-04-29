@@ -1,4 +1,5 @@
-import subprocess
+import requests
+import os
 
 # 你的源仓库 CDN 加速前缀
 CDN_PREFIX = "https://gcore.jsdelivr.net/gh/Wang963963/IPTV-4K-M3U@main/m3u/"
@@ -46,15 +47,23 @@ m3u_files = [
     "黑龙江联通.m3u"
 ]
 
-# 生成待检测链接列表
-with open("urls.txt", "w", encoding="utf-8") as f:
-    for fname in m3u_files:
-        f.write(CDN_PREFIX + fname + "\n")
+# 1. 下载所有子m3u内容并合并
+merged_lines = ["#EXTM3U"]
+for fname in m3u_files:
+    url = CDN_PREFIX + fname
+    try:
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        lines = resp.text.splitlines()
+        # 跳过子m3u里的#EXTM3U，只保留频道
+        for line in lines:
+            if line.strip() and not line.startswith("#EXTM3U"):
+                merged_lines.append(line)
+    except Exception as e:
+        print(f"下载失败: {fname} - {e}")
 
-# 执行测速合并
-subprocess.run([
-    "iptv-checker",
-    "-i", "urls.txt",
-    "-o", "auto_total.m3u",
-    "--timeout", "5"
-])
+# 2. 写入最终聚合文件
+with open("auto_iptv_wang.m3u", "w", encoding="utf-8") as f:
+    f.write("\n".join(merged_lines))
+
+print("✅ 聚合完成，已生成 auto_iptv_wang.m3u")
