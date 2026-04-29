@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 import subprocess
 
 # 你的源仓库 CDN 加速前缀
 CDN_PREFIX = "https://gcore.jsdelivr.net/gh/Wang963963/IPTV-4K-M3U@main/m3u/"
 
-# 你目录下所有需要聚合的线路（已按你截图整理好）
+# 你目录下的所有线路（已按你截图整理）
 m3u_files = [
     "上海电信.m3u",
     "内蒙古联通.m3u",
@@ -47,12 +46,12 @@ m3u_files = [
     "黑龙江联通.m3u"
 ]
 
-# 写入所有线路的加速链接到待检测列表
+# 生成待检测链接列表
 with open("urls.txt", "w", encoding="utf-8") as f:
     for fname in m3u_files:
         f.write(CDN_PREFIX + fname + "\n")
 
-# 自动测速、筛选有效源，生成最优合并m3u
+# 执行测速合并
 subprocess.run([
     "iptv-checker",
     "-i", "urls.txt",
