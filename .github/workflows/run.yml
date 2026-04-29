@@ -6,28 +6,27 @@ on:
     - cron: '0 4 * * *'
 
 jobs:
-  run:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.11
+          python-version: "3.11"
 
-      - name: Install tools
-        run: pip install iptv-checker requests
+      - name: Install requests
+        run: pip install requests
 
-      - name: Run Script
+      - name: Run merge script
         run: python merge.py
 
-      - name: Commit & Push
+      - name: Commit changes
         run: |
           git config --global user.name "Wang963963"
           git config --global user.email "your_email@example.com"
-          git add .
-          git commit -m "Auto update" || echo "No changes to commit"
+          git add auto_iptv_wang.m3u
+          git commit -m "Update IPTV list" || echo "No changes to commit"
           git push
