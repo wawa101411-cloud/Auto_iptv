@@ -1,9 +1,10 @@
-name: IPTV Auto Merge
+name: IPTV Auto Speed Test
 on:
   push:
     branches: [ main ]
   schedule:
     - cron: '0 4 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,10 +18,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install requests
-        run: pip install requests
+      - name: Install dependencies
+        run: pip install aiohttp
 
-      - name: Run merge script
+      - name: Run speed test & merge
         run: python merge.py
 
       - name: Commit changes
@@ -28,5 +29,5 @@ jobs:
           git config --global user.name "Wang963963"
           git config --global user.email "your_email@example.com"
           git add auto_iptv_wang.m3u
-          git commit -m "Update IPTV list" || echo "No changes to commit"
+          git commit -m "Update IPTV list (speed tested)" || echo "No changes to commit"
           git push
