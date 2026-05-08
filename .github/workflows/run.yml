@@ -19,15 +19,17 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install aiohttp
+        run: |
+          python -m pip install --upgrade pip
+          pip install aiohttp
 
       - name: Run speed test & merge
         run: python merge.py
 
       - name: Commit changes
         run: |
-          git config --global user.name "Wang963963"
-          git config --global user.email "your_email@example.com"
+          git config --local user.name "Wang963963"
+          git config --local user.email "donger_w@qq.com"
           git add auto_iptv_wang.m3u
           git commit -m "Update IPTV list (speed tested)" || echo "No changes to commit"
           git push
